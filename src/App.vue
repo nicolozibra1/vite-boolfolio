@@ -10,9 +10,12 @@
                   <div class="card-img-top">
                       <img :src="project.image" :alt="project.title" class="img-fluid">
                   </div>
-                  <!-- <div class="card-body">
-                      <h6>Brand {{ project.type.name }}</h6>
-                  </div> -->
+                  <div class="card-body">
+                      <h6>{{ project.type.name }}</h6>
+                      <div class="box-badge" v-for="(technology, index) in project.technologies">
+                        <span class="badge text-bg-warning">{{ technology.name }}</span>
+                      </div>
+                  </div>
               </div>
           </div>
       </div>
@@ -49,7 +52,7 @@ export default {
               }
           }).then((res) => {
               console.log(res);
-              this.projects = res.data.results;
+              this.projects = res.data.results.data;
               this.currentPage = res.data.results.current_page;
               this.lastPage = res.data.results.last_page;
           })
