@@ -1,4 +1,7 @@
 <template>
+    <div class="loader d-flex justify-content-center align-items-center">
+        <LoadingComponent v-if="store.loading"/>
+    </div>
     <div class="container">
         <h1>{{ title }}</h1>
         <div class="row">
@@ -16,25 +19,29 @@
 </template>
 
 <script>
+import { store } from '../data/store.js'
 import axios from 'axios';
+import LoadingComponent from '../components/LoadingComponent.vue';
 import ProjectCardComponent from '../components/ProjectCardComponent.vue';
 export default {
   'name': 'ProjectList',
   components: {
-    ProjectCardComponent
+    ProjectCardComponent,
+    LoadingComponent
   },
   data() {
       return {
+          store,
           title: 'Portfolio',
           projects: [],
-          apiUrl: 'http://127.0.0.1:8000/api',
           currentPage: 1,
           lastPage: null,
       }
   },
   methods: {
       getData(numPage) {
-          axios.get(`${this.apiUrl}/projects`, {
+        store.loading = true;
+          axios.get(`${store.apiUrl}/projects`, {
               params: {
                   'page': numPage
               }
@@ -43,6 +50,8 @@ export default {
               this.projects = res.data.results.data;
               this.currentPage = res.data.results.current_page;
               this.lastPage = res.data.results.last_page;
+          }).finally(() => {
+            store.loading = false;
           })
       }
   },
